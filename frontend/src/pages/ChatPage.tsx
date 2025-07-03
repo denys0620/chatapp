@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState} from "react";
 import { io } from "socket.io-client";
 import MessageList from "../components/chatpage/MessageList";
 import MessageInput from "../components/chatpage/MessageInput";
@@ -25,11 +25,14 @@ const ChatPage: React.FC<Props> = ({ user }) => {
   const [activeUsers, setActiveUsers] = useState<string[]>([]);
 
 
+
   useEffect(() => {
 
   fetchMessages().then((data) => {
     setMessages(data);
   });
+
+
 
   socket.emit("userConnected", user.username);
   socket.emit("setUsername", user.username); // used for disconnect cleanup
