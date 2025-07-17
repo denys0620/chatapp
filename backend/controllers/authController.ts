@@ -3,11 +3,13 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import User from "../models/user";
 import { log } from "console";
+import { OAuth2Client } from "google-auth-library";
 
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 const JWT_SECRET = process.env.JWT_SECRET!;
 
 // @desc    Register new user
-export const registerUser = async (req: Request, res: Response) => {
+export const registerUser = async (req: Request, res: Response): Promise<void> => {
   try {
     console.log(req);
     
@@ -15,7 +17,10 @@ export const registerUser = async (req: Request, res: Response) => {
 
     // Check if user exists
     const existingUser = await User.findOne({ username });
-    if (existingUser) return res.status(400).json({ message: "User already exists" });
+    if (existingUser) {
+      res.status(400).json({ message: "User already exists" });
+      return;
+    }
 
     // Hash password
     const salt = await bcrypt.genSalt(10);
@@ -32,19 +37,25 @@ export const registerUser = async (req: Request, res: Response) => {
 };
 
 // @desc    Login user
-export const loginUser = async (req: Request, res: Response) => {
+export const loginUser = async (req: Request, res: Response): Promise<void> => {
   console.log(req);
   try {
     const { username, password } = req.body;
     
     // Find user
     const user = await User.findOne({ username });
-    if (!user) return res.status(400).json({ message: "NOT exit user,PLZ regist" });
+    if (!user) {
+      res.status(400).json({ message: "NOT exit user,PLZ regist" });
+      return;
+    }
 
     // Check password
     const isMatch = await bcrypt.compare(password, user.password);
     
-    if (!isMatch) return res.status(400).json({ message: "Wrong Password" });
+    if (!isMatch) {
+      res.status(400).json({ message: "Wrong Password" });
+      return;
+    }
 
     // Create JWT token
     const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: "1d" });

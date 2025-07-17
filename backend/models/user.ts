@@ -3,20 +3,35 @@ import mongoose, { Schema, Document, Types } from "mongoose";
 export interface IUser extends Document {
   _id: Types.ObjectId; // Explicit _id
   username: string;
-  password: string;
+  password?: string;
   createdAt: Date;
+  googleId?: string;
+  email?: string;
+  picture?: string;
 }
 
 const userSchema: Schema<IUser> = new Schema({
+  googleId: {
+    type: String,
+    unique: true,
+    sparse: true,
+  },
+  email: {
+    type: String,
+    unique: true,
+    sparse: true,
+  },
+  picture: {
+    type: String,
+  },
   username: {
     type: String,
     required: true,
-    unique: true,
     trim: true
   },
   password: {
     type: String,
-    required: true
+    required: false
   },
   createdAt: {
     type: Date,

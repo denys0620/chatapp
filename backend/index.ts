@@ -9,6 +9,9 @@ import messageRoutes from "./routes/messages";
 import { createServer } from "http";
 import filerouter from "./routes/uploadRoute";
 import path from "path";
+import session from "express-session";
+import passport from "passport";
+import "./config/passport";
 
 dotenv.config();
 const PORT = process.env.PORT || 5000;
@@ -25,6 +28,17 @@ app.use("/", authrouter);
 app.use("/messages", messageRoutes);
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use("/upload", filerouter);
+
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET!,
+    resave: false,
+    saveUninitialized: false,
+  })
+);
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 const io = new Server(httpServer, {
   cors: {

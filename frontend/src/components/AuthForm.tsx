@@ -1,16 +1,11 @@
 import React, {useState} from "react";
 import { useAuth } from "../hook/useAuth";
-
-interface AuthFormProps {
-  setUser: React.Dispatch<React.SetStateAction<any>>;
-}
-
-const AuthForm = ({ setUser }: AuthFormProps) => {
+const AuthForm = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const {login, signup} = useAuth()
+  const {login, signup, setUser} = useAuth()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -56,6 +51,11 @@ const AuthForm = ({ setUser }: AuthFormProps) => {
         >
           {isLogin ? "No account? Sign up here." : "Already have an account? Log in."}
         </p>
+        <div className="mt-4">
+          <a href="http://localhost:5000/auth/google" className="w-full bg-red-500 text-white py-2 rounded flex items-center justify-center">
+            Sign in with Google
+          </a>
+        </div>
       </form>
     </div>
   );

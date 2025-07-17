@@ -16,11 +16,10 @@ interface Message {
   file?: { fileUrl: string; fileName: string };
 }
 
-interface Props {
-  user: { id: string; username: string };
-}
+import { useAuth } from "../hook/useAuth";
 
-const ChatPage: React.FC<Props> = ({ user }) => {
+const ChatPage: React.FC = () => {
+  const { user } = useAuth();
   const [messages, setMessages] = useState<Message[]>([]);
   const [activeUsers, setActiveUsers] = useState<string[]>([]);
 
